@@ -5,7 +5,8 @@ const sequelize = new Sequelize(process.env.SEQUELIZE_URI as any, {
         ssl: {
             require: true,
             rejectUnauthorized: false // <<<<<<< YOU NEED THIS
-        }
-    }
+        },
+
+    },
 }) // Example for postgres
 export { sequelize }

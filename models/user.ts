@@ -1,7 +1,5 @@
 import { sequelize } from "@/lib/sequelize";
 import { DataTypes } from 'sequelize';
-import { Report } from "./report";
-import { Auth } from "./auth";
 
 export const User = sequelize.define(
     'User',
@@ -20,6 +18,5 @@ export const User = sequelize.define(
     },
     {},
 );
-// User.hasMany(Report)
-// User.belongsTo(Auth)
-console.log(User === sequelize.models.User); // true
+
+console.log(User === sequelize.models.User, "model user"); // true

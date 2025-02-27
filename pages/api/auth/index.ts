@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { runMiddleware } from "../../../lib/corsMiddleware";
-import { findOrCreateAuth, UserData } from "@/controllers/auth";
+import { changePassword, findOrCreateAuth, UserData } from "@/controllers/auth";
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     await runMiddleware(req, res);
@@ -11,12 +11,17 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             .json({ message: "Debes ingresar un email para poder ingresar." });
     }
     if (req.method === "POST") {
+        console.log("auth POST method")
         const { email, fullName, location, password } = req.body;
         const data: UserData = {
             email, fullName, location, password
         }
         const result = await findOrCreateAuth(data)
         res.send(result)
+    } else if (req.method === "PATCH") {
+        const { newPassword } = req.body
+        const res = await changePassword(newPassword)
+        return res
     } else {
         res.send({ message: "Method Not Allowed" })
     }

@@ -1,5 +1,5 @@
-import { Auth } from "@/models/auth";
-import { User } from "@/models/user";
+import { Auth } from "@/models";
+import { User } from "@/models";
 import * as crypto from "crypto"
 import { generate } from "@/lib/jwt";
 
@@ -30,15 +30,15 @@ export async function findOrCreateAuth(data: UserData) {
             location,
         },
     });
-    console.log(user.get("id"))
     const [auth, authCreated] = await Auth.findOrCreate({
-        where: { password: getSHA256ofString(password) },
+        where: { email },
         defaults: {
             email,
             password: getSHA256ofString(password),
             user_id: user.get("id")
         },
     });
+    console.log(user.get("id"))
     return {
         auth: {
             auth, authCreated
@@ -48,7 +48,6 @@ export async function findOrCreateAuth(data: UserData) {
         }
     }
 }
-
 // para usar en el endpoint auth/token, crear controller 27/12/24
 export async function logInAuthToken(data: AuthData) {
     const { email, password } = data
@@ -66,8 +65,16 @@ export async function logInAuthToken(data: AuthData) {
         return console.error("user not found")
     }
 }
-
 export async function findAuthByUserId(user_id: number) {
     const auth = await Auth.findOne({ where: { user_id } });
     return auth;
+}
+
+export async function changePassword(password: string) {
+    const auth = await Auth.findOne({ where: { password } })
+    const res = await auth?.set({
+        password: getSHA256ofString(password)
+    })
+    const saved = await res?.save()
+    return saved
 }

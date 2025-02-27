@@ -1,6 +1,5 @@
 import { sequelize } from "@/lib/sequelize";
 import { DataTypes } from 'sequelize';
-import { User } from "./user";
 
 export const Auth = sequelize.define(
     'Auth',
@@ -19,6 +18,5 @@ export const Auth = sequelize.define(
     },
     {},
 );
-// Auth.hasOne(User)
-console.log(Auth === sequelize.models.Auth); // true
+console.log(Auth === sequelize.models.Auth, "model auth"); // true
 

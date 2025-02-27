@@ -1,5 +1,5 @@
-import { Auth } from "@/models/auth";
-import { User } from "@/models/user";
+import { Auth } from "@/models";
+import { User } from "@/models";
 
 export type UserData = {
     fullName: string,
@@ -10,7 +10,7 @@ export async function getUserInfo(user_id: number) {
     const auth = await Auth.findOne({ where: { user_id } })
     const email = auth?.get("email")
     const user = await User.findOne({ where: { email } })
-    return user
+    if (user) { return user }
 }
 
 export async function updateUser(data: UserData, user_id: number) {
@@ -20,5 +20,6 @@ export async function updateUser(data: UserData, user_id: number) {
         fullName,
         location
     })
-    return res
+    const saved = await res?.save()
+    return saved
 }
