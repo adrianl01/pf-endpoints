@@ -12,6 +12,7 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
     if (req.method === "GET") {
         // OBTENER REPORTES DE PETS BASADA EN LAS COORDENADAS
         const { coords } = req.body;
+        console.log(coords)
         if (coords) {
             const searchRes = await getReportsByCoords(coords)
             res.send(searchRes)
