@@ -7,8 +7,7 @@ v2.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-const uploadImage = async (imagePath) => {
-
+export const uploadImage = async (imagePath: any) => {
     // Use the uploaded file's name as the asset's public ID and 
     // allow overwriting the asset with new versions
     const options = {
@@ -16,7 +15,6 @@ const uploadImage = async (imagePath) => {
         unique_filename: false,
         overwrite: true,
     };
-
     try {
         // Upload the image
         const result = await v2.uploader.upload(imagePath, options);

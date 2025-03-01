@@ -8,7 +8,7 @@ export type ReportInfo = {
     location: string
 }
 
-export default async function auth(req: NextApiRequest, res: NextApiResponse) {
+export default async function reportSight(req: NextApiRequest, res: NextApiResponse) {
     await runMiddleware(req, res);
     if (req.method === "POST") {
         const { email, name, phoneNumber, location } = req.body;
