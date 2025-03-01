@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/pg": "^8.11.11",
     "algoliasearch": "4.23.3",
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
