@@ -11,10 +11,18 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
     const token = parseBearerToken(req)
     if (req.method === "GET") {
         // OBTENER REPORTES DE PETS BASADA EN LAS COORDENADAS
-        const { coords } = req.body;
-        console.log(coords)
+        const { lat, long, radius } = req.query as any
+        const strngLat = JSON.parse(lat);
+        const strngLong = JSON.parse(long);
+        const strngRadius = JSON.parse(radius);
+        const coords = {
+            strngLat,
+            strngLong,
+            strngRadius
+        }
         if (coords) {
             const searchRes = await getReportsByCoords(coords)
+            console.log(searchRes)
             res.send(searchRes)
         } else {
             res.status(404).send("No hay coordenadas")
@@ -29,8 +37,7 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
         const parsedToken = JSON.parse(decodedToken as any)
         const auth = await findAuthByUserId(parsedToken)
         if (auth?.dataValues.email === email) {
-            const resCloudinaryImgUrl = await uploadImage(petImg) as string
-            const data: ReportData = { petName, location, long, lat, petImg: resCloudinaryImgUrl, email };
+            const data: ReportData = { petName, location, long, lat, petImg, email };
             const result = await createReport(data);
             res.send(result)
         } else {

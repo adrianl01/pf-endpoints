@@ -27,10 +27,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     }
 }
 
-
-
-
-
 // CONCEPTOS MVC
 // los endpoints sólo reciben y checkean las req y querys
 // siempre la salida del endpoint tiene que ser predecible

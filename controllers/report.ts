@@ -1,4 +1,5 @@
 import { reportIndex } from "@/lib/algolia";
+import { uploadImage } from "@/lib/cloudinary";
 import { Report } from "@/models";
 
 export type ReportData = {
@@ -18,19 +19,27 @@ export async function createReport(data: ReportData) {
     const strgLong = await JSON.stringify(long)
     const strgLat = await JSON.stringify(lat)
     console.log(strgLat, strgLong)
-    const report = await Report.create({ petName, location, long: strgLong, lat: strgLat, petImg, email });
-    const res = await await reportIndex.saveObject({
-        objectID: report.get("id"),
-        petName: report.get("petName"),
-        "_geoloc": {
-            "lat": lat,
-            "lng": long
-        },
-        email,
-        location
-    })
-    console.log(res)
-    return report
+    const resCloudinaryImgUrl = await uploadImage(petImg)
+    // const report = await Report.create({ petName, location, long: strgLong, lat: strgLat, petImg:resCloudinaryImgUrl, email });
+    // const res = await await reportIndex.saveObject({
+    //     objectID: report.get("id"),
+    //     petName: report.get("petName"),
+    //     "_geoloc": {
+    //         "lat": lat,
+    //         "lng": long
+    //     },
+    //     email,
+    //     location,
+    //     petImg:resCloudinaryImgUrl.
+    //     })
+    // console.log(res)
+    // return report
+
+    // probar el url de cloudinary después de subir una foto
+
+
+
+    return "ok"
 }
 
 export async function updateReport(data: ReportDataUpdate, objectID: number) {
@@ -55,9 +64,10 @@ export async function getMyReports(email: string) {
 }
 
 export async function getReportsByCoords(coords: any) {
-    const coordsLong = coords.long
-    const coordsLat = coords.lat
-    const radius = coords.radius
+    console.log(coords)
+    const coordsLong = coords.strngLong
+    const coordsLat = coords.strngLat
+    const radius = coords.strngRadius
 
     const { hits } = await reportIndex.search("", {
         aroundLatLng: [coordsLat, coordsLong].join(","),
