@@ -6,6 +6,7 @@ import { AuthData, logInAuthToken } from "@/controllers/auth";
 
 export default async function token(req: NextApiRequest, res: NextApiResponse) {
     await runMiddleware(req, res);
+    console.log(req.body)
     const { email } = req.body;
     if (!email) {
         res
