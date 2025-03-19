@@ -19,27 +19,22 @@ export async function createReport(data: ReportData) {
     const { petName, location, long, lat, petImg, email } = data
     const strgLong = await JSON.stringify(long)
     const strgLat = await JSON.stringify(lat)
-    console.log(strgLat, strgLong)
-    const resCloudinaryImgUrl = await uploadImage(petImg)
-    console.log(resCloudinaryImgUrl)
-
-    // const report = await Report.create({ petName, location, long: strgLong, lat: strgLat, petImg:resCloudinaryImgUrl, email });
-    // const res = await await reportIndex.saveObject({
-    //     objectID: report.get("id"),
-    //     petName: report.get("petName"),
-    //     "_geoloc": {
-    //         "lat": lat,
-    //         "lng": long
-    //     },
-    //     email,
-    //     location,
-    //     petImg:resCloudinaryImgUrl.
-    //     })
-    // console.log(res)
-    // return report
-
+    const report = await Report.create({ petName, location, long: strgLong, lat: strgLat, petImg, email });
+    const res = await await reportIndex.saveObject({
+        objectID: report.get("id"),
+        petName: report.get("petName"),
+        "_geoloc": {
+            "lat": lat,
+            "lng": long
+        },
+        email,
+        location,
+        petImg
+    })
+    console.log(res)
+    return report
     // probar el url de cloudinary después de subir una foto
-    return "ok"
+    // return { message: "ok" }
 }
 
 export async function updateReport(data: ReportDataUpdate, objectID: number) {
