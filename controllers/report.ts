@@ -15,11 +15,14 @@ export type ReportDataUpdate = {
 }
 
 export async function createReport(data: ReportData) {
+    console.log(data)
     const { petName, location, long, lat, petImg, email } = data
     const strgLong = await JSON.stringify(long)
     const strgLat = await JSON.stringify(lat)
     console.log(strgLat, strgLong)
     const resCloudinaryImgUrl = await uploadImage(petImg)
+    console.log(resCloudinaryImgUrl)
+
     // const report = await Report.create({ petName, location, long: strgLong, lat: strgLat, petImg:resCloudinaryImgUrl, email });
     // const res = await await reportIndex.saveObject({
     //     objectID: report.get("id"),
@@ -36,9 +39,6 @@ export async function createReport(data: ReportData) {
     // return report
 
     // probar el url de cloudinary después de subir una foto
-
-
-
     return "ok"
 }
 
