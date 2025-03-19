@@ -11,7 +11,6 @@ const cors = Cors({
 
 export function runMiddleware(req: NextApiRequest, res: NextApiResponse) {
     console.log("runmiddleware")
-    console.log(req.headers)
     return new Promise((resolve, reject) => {
         cors(req, res, (result) => {
             if (result instanceof Error) {

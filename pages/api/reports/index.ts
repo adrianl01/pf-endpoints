@@ -8,6 +8,8 @@ import parseBearerToken from "parse-bearer-token";
 
 export default async function reports(req: NextApiRequest, res: NextApiResponse) {
     await runMiddleware(req, res);
+    console.log(req.method)
+    console.log(req.body)
     const token = parseBearerToken(req)
     if (req.method === "GET") {
         // OBTENER REPORTES DE PETS BASADA EN LAS COORDENADAS
