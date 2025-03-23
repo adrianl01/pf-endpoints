@@ -1,5 +1,4 @@
 import { reportIndex } from "@/lib/algolia";
-import { uploadImage } from "@/lib/cloudinary";
 import { Report } from "@/models";
 
 export type ReportData = {
@@ -7,15 +6,13 @@ export type ReportData = {
     long: number, lat: number,
     petImg: string, email: string
 }
-export type ReportDataUpdate = {
-    petName: string, location: string,
-    long: number, lat: number,
-    petImg: string, email: string
-    id: number
-}
+// export type ReportDataUpdate = {
+//     petName: string, location: string,
+//     long: number, lat: number,
+//     petImg: string, email: string
+// }
 
 export async function createReport(data: ReportData) {
-    console.log(data)
     const { petName, location, long, lat, petImg, email } = data
     const strgLong = await JSON.stringify(long)
     const strgLat = await JSON.stringify(lat)
@@ -37,25 +34,34 @@ export async function createReport(data: ReportData) {
     // return { message: "ok" }
 }
 
-export async function updateReport(data: ReportDataUpdate, objectID: number) {
-    const { petName, location, long, lat, petImg, email, id } = data
-    console.log(data)
+export async function updateReport(data: ReportData, id: number) {
+    console.log("updateReport")
+    const { petName, location, long, lat, petImg, email } = data
     const report = await Report.findOne({
         where: { id, email },
     });
-    console.log(report)
     const res = await report?.set({
         petName, location, long, lat, petImg, email
     })
-    const strg = JSON.stringify(objectID)
-    reportIndex.findObject(hit => hit.objectID == strg)
+    console.log(res?.dataValues.petName)
+    const _geoloc = { lat: lat, lng: long }
+    // IMPORTANTE!!!!: .toString() pone {''} al objeto, y JSON.stringify() pone {""} al objeto
+    const objectID = id.toString()
+    const algolia = await reportIndex.partialUpdateObject({ petName: petName, location, _geoloc, petImg, objectID: objectID })
+    algolia
+    console.log("algolia:", algolia)
     const saved = await res?.save()
-    return saved
+    return { saved, algolia }
+
 }
 
 export async function getMyReports(email: string) {
     const myReports = await Report.findAll({ where: { email } })
     return myReports
+}
+export async function getMyReportById(email: string, id: number) {
+    const report = await Report.findOne({ where: { email, id } })
+    return report
 }
 
 export async function getReportsByCoords(coords: any) {
@@ -72,8 +78,8 @@ export async function getReportsByCoords(coords: any) {
     return hits
 }
 
-export async function deleteReport(report_id: number) {
-    const report = await Report.findOne({ where: { id: report_id } })
+export async function deleteReport(email: string, id: number) {
+    const report = await Report.findOne({ where: { email, id } })
     console.log(report)
     const res = await report?.destroy()
     return res

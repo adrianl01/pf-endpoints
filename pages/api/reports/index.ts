@@ -1,6 +1,5 @@
 import { findAuthByUserId } from "@/controllers/auth";
-import { createReport, getReportsByCoords, ReportData } from "@/controllers/report";
-import { uploadImage } from "@/lib/cloudinary";
+import { createReport, getReportsByCoords, ReportData, updateReport } from "@/controllers/report";
 import { runMiddleware } from "@/lib/corsMiddleware";
 import { decode } from "@/lib/jwt";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -8,8 +7,6 @@ import parseBearerToken from "parse-bearer-token";
 
 export default async function reports(req: NextApiRequest, res: NextApiResponse) {
     await runMiddleware(req, res);
-    console.log(req.method)
-    console.log(req.body)
     const token = parseBearerToken(req)
     if (req.method === "GET") {
         // OBTENER REPORTES DE PETS BASADA EN LAS COORDENADAS
@@ -24,14 +21,10 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
         }
         if (coords) {
             const searchRes = await getReportsByCoords(coords)
-            console.log(searchRes)
             res.send(searchRes)
         } else {
             res.status(404).send("No hay coordenadas")
         }
-        // BUSQUEDA DIRECTA A LA DB DE ALGOLIA
-
-        // res.send(lista de reports)
     } else if (req.method === "POST") {
         // CREAR UN REPORTE CON SEQUALIZE USANDO POSTGRESQL
         const { petName, location, long, lat, petImg, email } = req.body;
@@ -39,12 +32,17 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
         const parsedToken = JSON.parse(decodedToken as any)
         const auth = await findAuthByUserId(parsedToken)
         if (auth?.dataValues.email === email) {
-            const data: ReportData = { petName, location, long, lat, petImg, email };
-            const result = await createReport(data);
-            res.send(result)
+            try {
+                const data: ReportData = { petName, location, long, lat, petImg, email };
+                const result = await createReport(data);
+                res.send(result)
+            }
+            catch (e) {
+                console.error(e)
+            }
         } else {
-            res.send({ message: "Method Not Allowed" })
+            res.send({ message: "Token Error" })
         }
-    }
+    } else { return { message: "Method Not Allowed" } }
 }
 
