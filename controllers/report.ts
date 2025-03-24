@@ -35,7 +35,6 @@ export async function createReport(data: ReportData) {
 }
 
 export async function updateReport(data: ReportData, id: number) {
-    console.log("updateReport")
     const { petName, location, long, lat, petImg, email } = data
     const report = await Report.findOne({
         where: { id, email },
@@ -43,13 +42,10 @@ export async function updateReport(data: ReportData, id: number) {
     const res = await report?.set({
         petName, location, long, lat, petImg, email
     })
-    console.log(res?.dataValues.petName)
     const _geoloc = { lat: lat, lng: long }
     // IMPORTANTE!!!!: .toString() pone {''} al objeto, y JSON.stringify() pone {""} al objeto
     const objectID = id.toString()
     const algolia = await reportIndex.partialUpdateObject({ petName: petName, location, _geoloc, petImg, objectID: objectID })
-    algolia
-    console.log("algolia:", algolia)
     const saved = await res?.save()
     return { saved, algolia }
 
@@ -81,6 +77,9 @@ export async function getReportsByCoords(coords: any) {
 export async function deleteReport(email: string, id: number) {
     const report = await Report.findOne({ where: { email, id } })
     console.log(report)
+    const strngId = id.toString()
+    const algoliaRes = await reportIndex.deleteObject(strngId)
+    console.log(algoliaRes)
     const res = await report?.destroy()
     return res
 }
