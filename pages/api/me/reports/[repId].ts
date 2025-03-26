@@ -1,5 +1,5 @@
 import { findAuthByUserId } from "@/controllers/auth";
-import { deleteReport, getMyReportById, ReportData, updateReport } from "@/controllers/report";
+import { deleteOldRepImg, deleteReport, getMyReportById, ReportData, updateReport } from "@/controllers/report";
 import { getUserInfo } from "@/controllers/user";
 import { runMiddleware } from "@/lib/corsMiddleware";
 import { decode } from "@/lib/jwt";
@@ -21,6 +21,8 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
     } else if (req.method === "PATCH") {
         const { petName, location, long, lat, petImg, email } = req.body;
         const resEmail = await getUserInfo(decodedToken as any);
+        if (req.body.oldImg) { deleteOldRepImg(req.body.oldImg as any) }
+        res.send({ message: "ok" })
         if (resEmail?.dataValues.email === email) {
             try {
                 const data: ReportData = { petName, location, long, lat, petImg, email };

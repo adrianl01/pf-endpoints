@@ -1,16 +1,14 @@
 import { reportIndex } from "@/lib/algolia";
+import { cloudinary } from "@/lib/cloudinary";
 import { Report } from "@/models";
+var urlSlicer = require('url-slicer');
+
 
 export type ReportData = {
     petName: string, location: string,
     long: number, lat: number,
     petImg: string, email: string
 }
-// export type ReportDataUpdate = {
-//     petName: string, location: string,
-//     long: number, lat: number,
-//     petImg: string, email: string
-// }
 
 export async function createReport(data: ReportData) {
     const { petName, location, long, lat, petImg, email } = data
@@ -28,10 +26,7 @@ export async function createReport(data: ReportData) {
         location,
         petImg
     })
-    console.log(res)
     return report
-    // probar el url de cloudinary después de subir una foto
-    // return { message: "ok" }
 }
 
 export async function updateReport(data: ReportData, id: number) {
@@ -48,7 +43,19 @@ export async function updateReport(data: ReportData, id: number) {
     const algolia = await reportIndex.partialUpdateObject({ petName: petName, location, _geoloc, petImg, objectID: objectID })
     const saved = await res?.save()
     return { saved, algolia }
+}
 
+export async function deleteOldRepImg(oldImg: any) {
+    await urlSlicer.init();
+    const res = await urlSlicer.slice(oldImg);
+    const str = res.query as string;
+    const splitRes = str.split("/");
+    const s1 = splitRes[4];
+    const s2 = splitRes[5].split(".")[0];
+    try {
+        const cloudinaryRes = await cloudinary.uploader.destroy(s1 + "/" + s2);
+        return cloudinaryRes
+    } catch (e) { return e }
 }
 
 export async function getMyReports(email: string) {

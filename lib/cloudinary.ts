@@ -6,7 +6,7 @@ v2.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 })
-
+export const cloudinary = v2
 export const uploadImage = async (imagePath: any) => {
     // Use the uploaded file's name as the asset's public ID and 
     // allow overwriting the asset with new versions
