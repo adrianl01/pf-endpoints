@@ -19,10 +19,9 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
         const result = await getMyReportById(resEmail, repId)
         res.send(result)
     } else if (req.method === "PATCH") {
-        const { petName, location, long, lat, petImg, email } = req.body;
+        const { petName, location, long, lat, petImg, email, oldImg } = req.body;
         const resEmail = await getUserInfo(decodedToken as any);
-        if (req.body.oldImg) { deleteOldRepImg(req.body.oldImg as any) }
-        res.send({ message: "ok" })
+        if (oldImg) { deleteOldRepImg(oldImg as any) }
         if (resEmail?.dataValues.email === email) {
             try {
                 const data: ReportData = { petName, location, long, lat, petImg, email };
