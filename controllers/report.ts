@@ -2,7 +2,6 @@ import { reportIndex } from "@/lib/algolia";
 import { cloudinary } from "@/lib/cloudinary";
 import { Report } from "@/models";
 
-
 export type ReportData = {
     petName: string, location: string,
     long: number, lat: number,
@@ -14,7 +13,7 @@ export async function createReport(data: ReportData) {
     const strgLong = await JSON.stringify(long)
     const strgLat = await JSON.stringify(lat)
     const report = await Report.create({ petName, location, long: strgLong, lat: strgLat, petImg, email });
-    const res = await await reportIndex.saveObject({
+    const res = await reportIndex.saveObject({
         objectID: report.get("id"),
         petName: report.get("petName"),
         "_geoloc": {
@@ -45,14 +44,11 @@ export async function updateReport(data: ReportData, id: number) {
 }
 
 export async function deleteOldRepImg(oldImg: any) {
-    console.log(oldImg)
     const splitRes = oldImg.split("/");
-    console.log(splitRes)
     const s1 = splitRes[7];
     const s2 = splitRes[8].split(".")[0];
     try {
         const cloudinaryRes = await cloudinary.uploader.destroy(s1 + "/" + s2);
-        console.log(cloudinaryRes)
         return cloudinaryRes
     } catch (e) { return e }
 }
@@ -71,21 +67,17 @@ export async function getReportsByCoords(coords: any) {
     const coordsLong = coords.strngLong
     const coordsLat = coords.strngLat
     const radius = coords.strngRadius
-
     const { hits } = await reportIndex.search("", {
         aroundLatLng: [coordsLat, coordsLong].join(","),
         aroundRadius: radius
     })
-
     return hits
 }
 
 export async function deleteReport(email: string, id: number) {
     const report = await Report.findOne({ where: { email, id } })
-    console.log(report)
     const strngId = id.toString()
-    const algoliaRes = await reportIndex.deleteObject(strngId)
-    console.log(algoliaRes)
+    await reportIndex.deleteObject(strngId)
     const res = await report?.destroy()
     return res
 }
