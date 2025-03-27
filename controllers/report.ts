@@ -48,13 +48,13 @@ export async function deleteOldRepImg(oldImg: any) {
     console.log(oldImg)
     const splitRes = oldImg.split("/");
     console.log(splitRes)
-    const s1 = splitRes[4];
-    const s2 = splitRes[5].split(".")[0];
-    // try {
-    //     const cloudinaryRes = await cloudinary.uploader.destroy(s1 + "/" + s2);
-    //     console.log(cloudinaryRes)
-    //     return cloudinaryRes
-    // } catch (e) { return e }
+    const s1 = splitRes[7];
+    const s2 = splitRes[8].split(".")[0];
+    try {
+        const cloudinaryRes = await cloudinary.uploader.destroy(s1 + "/" + s2);
+        console.log(cloudinaryRes)
+        return cloudinaryRes
+    } catch (e) { return e }
 }
 
 export async function getMyReports(email: string) {
