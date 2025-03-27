@@ -46,6 +46,7 @@ export async function updateReport(data: ReportData, id: number) {
 }
 
 export async function deleteOldRepImg(oldImg: any) {
+    console.log(oldImg)
     await urlSlicer.init();
     const res = await urlSlicer.slice(oldImg);
     const str = res.query as string;
