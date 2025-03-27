@@ -1,7 +1,6 @@
 import { reportIndex } from "@/lib/algolia";
 import { cloudinary } from "@/lib/cloudinary";
 import { Report } from "@/models";
-var urlSlicer = require('url-slicer');
 
 
 export type ReportData = {
@@ -47,18 +46,15 @@ export async function updateReport(data: ReportData, id: number) {
 
 export async function deleteOldRepImg(oldImg: any) {
     console.log(oldImg)
-    await urlSlicer.init();
-    const res = await urlSlicer.slice(oldImg);
-    console.log(res)
-    const str = res.query as string;
-    const splitRes = str.split("/");
+    const splitRes = oldImg.split("/");
+    console.log(splitRes)
     const s1 = splitRes[4];
     const s2 = splitRes[5].split(".")[0];
-    try {
-        const cloudinaryRes = await cloudinary.uploader.destroy(s1 + "/" + s2);
-        console.log(cloudinaryRes)
-        return cloudinaryRes
-    } catch (e) { return e }
+    // try {
+    //     const cloudinaryRes = await cloudinary.uploader.destroy(s1 + "/" + s2);
+    //     console.log(cloudinaryRes)
+    //     return cloudinaryRes
+    // } catch (e) { return e }
 }
 
 export async function getMyReports(email: string) {
