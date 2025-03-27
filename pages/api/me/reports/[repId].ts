@@ -20,6 +20,7 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
         res.send(result)
     } else if (req.method === "PATCH") {
         const { petName, location, long, lat, petImg, email, oldImg } = req.body;
+        console.log(req.body)
         const resEmail = await getUserInfo(decodedToken as any);
         if (oldImg) { console.log("deleteOldImg"); const res = await deleteOldRepImg(oldImg as any); console.log(res) }
         if (resEmail?.dataValues.email === email) {
