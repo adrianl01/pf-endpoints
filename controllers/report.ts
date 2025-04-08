@@ -76,6 +76,8 @@ export async function getReportsByCoords(coords: any) {
 
 export async function deleteReport(email: string, id: number) {
     const report = await Report.findOne({ where: { email, id } })
+    const img = report?.dataValues.petImg
+    await deleteOldRepImg(img as any);
     const strngId = id.toString()
     await reportIndex.deleteObject(strngId)
     const res = await report?.destroy()
