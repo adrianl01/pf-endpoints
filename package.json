@@ -16,7 +16,7 @@
     "dotenv": "^16.4.7",
     "init": "^0.1.2",
     "jsonwebtoken": "^9.0.2",
-    "next": "15.1.2",
+    "next": "15.1.11",
     "node-mailjet": "^6.0.6",
     "parse-bearer-token": "^1.0.1",
     "pg": "^8.13.3",
