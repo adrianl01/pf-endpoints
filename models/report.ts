@@ -4,7 +4,10 @@ import { DataTypes } from 'sequelize';
 export const Report = sequelize.define(
     'Report',
     {
-        petName: { type: DataTypes.STRING, allowNull: false, },
+        report_id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+        name: { type: DataTypes.STRING, allowNull: false, },
+        species: { type: DataTypes.STRING, allowNull: false, },
+        breed: { type: DataTypes.STRING, allowNull: false, },
         location: { type: DataTypes.STRING, },
         long: { type: DataTypes.STRING },
         lat: { type: DataTypes.STRING },
