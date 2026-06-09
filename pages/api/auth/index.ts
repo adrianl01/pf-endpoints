@@ -1,30 +1,80 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { runMiddleware } from "../../../lib/corsMiddleware";
-import { changePassword, findOrCreateAuth, UserData } from "@/controllers/auth";
+import { runMiddleware } from "@/lib/corsMiddleware";
+import {
+  register,
+  changePassword,
+  RegisterData,
+} from "@/controllers/auth";
 
-export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-    await runMiddleware(req, res);
-    const { email } = req.body;
-    if (!email) {
-        res
-            .status(400)
-            .json({ message: "Debes ingresar un email para poder ingresar." });
-    }
+export default async function auth(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  await runMiddleware(req, res);
+
+  try {
     if (req.method === "POST") {
-        console.log("auth POST method")
-        const { email, fullName, location, password } = req.body;
-        const data: UserData = {
-            email, fullName, location, password
-        }
-        const result = await findOrCreateAuth(data)
-        res.send(result)
-    } else if (req.method === "PATCH") {
-        const { newPassword } = req.body
-        const res = await changePassword(newPassword)
-        return res
-    } else {
-        res.send({ message: "Method Not Allowed" })
+      const {
+        email,
+        password,
+        fullName,
+        location,
+      } = req.body;
+
+      if (
+        !email ||
+        !password ||
+        !fullName
+      ) {
+        return res.status(400).json({
+          message: "Missing required fields",
+        });
+      }
+
+      const data: RegisterData = {
+        email,
+        password,
+        fullName,
+        location,
+      };
+
+      const result = await register(data);
+
+      return res.status(201).json(result);
     }
+
+    if (req.method === "PATCH") {
+      const {
+        email,
+        newPassword,
+      } = req.body;
+
+      if (!email || !newPassword) {
+        return res.status(400).json({
+          message: "Email and newPassword are required",
+        });
+      }
+
+      const result = await changePassword(
+        email,
+        newPassword
+      );
+
+      return res.status(200).json(result);
+    }
+
+    return res.status(405).json({
+      message: "Method Not Allowed",
+    });
+  } catch (error: any) {
+    console.error(error);
+
+    return res.status(500).json({
+      message:
+        error?.message ||
+        "Internal Server Error",
+    });
+  }
 }
 
 // CONCEPTOS MVC

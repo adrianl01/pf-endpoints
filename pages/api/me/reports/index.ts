@@ -1,25 +1,55 @@
-import { createReport, getMyReports, ReportData } from "@/controllers/report";
+import { getUserReports } from "@/controllers/report";
 import { getUserInfo } from "@/controllers/user";
 import { runMiddleware } from "@/lib/corsMiddleware";
 import { decode } from "@/lib/jwt";
 import { NextApiRequest, NextApiResponse } from "next";
 import parseBearerToken from "parse-bearer-token";
 
+export default async function reports(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  await runMiddleware(req, res);
 
-export default async function reports(req: NextApiRequest, res: NextApiResponse) {
-    await runMiddleware(req, res);
-    const token = parseBearerToken(req)
-
-    if (req.method === "GET") {
-        if (!token) { res.status(404).send("No token was found on the request") }
-        const decodedToken = await decode(token as string)
-        const userInfoRes = await getUserInfo(decodedToken as any)
-        const resEmail = userInfoRes?.dataValues.email
-        // // OBTENER TODOS MIS REPORTES
-        const result = await getMyReports(resEmail)
-        res.send(result)
-    } else {
-        res.send({ message: "Method Not Allowed" })
+  try {
+    if (req.method !== "GET") {
+      return res.status(405).json({
+        message: "Method Not Allowed",
+      });
     }
-}
 
+    const token = parseBearerToken(req);
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token provided",
+      });
+    }
+
+    const decoded = decode(token);
+
+    const user = await getUserInfo(
+      decoded.email
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const reports = await getUserReports(
+      user.get("id") as number
+    );
+
+    return res.status(200).json(reports);
+  } catch (error: any) {
+    console.error(error);
+
+    return res.status(500).json({
+      message:
+        error?.message ||
+        "Internal Server Error",
+    });
+  }
+}

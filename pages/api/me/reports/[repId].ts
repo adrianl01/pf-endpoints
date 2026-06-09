@@ -1,44 +1,108 @@
-import { deleteOldRepImg, deleteReport, getMyReportById, ReportData, updateReport } from "@/controllers/report";
+import {
+  getReportById,
+  updateReport,
+  deleteReport,
+} from "@/controllers/report";
+
 import { getUserInfo } from "@/controllers/user";
 import { runMiddleware } from "@/lib/corsMiddleware";
 import { decode } from "@/lib/jwt";
+
 import { NextApiRequest, NextApiResponse } from "next";
 import parseBearerToken from "parse-bearer-token";
 
-export default async function reports(req: NextApiRequest, res: NextApiResponse) {
-    await runMiddleware(req, res);
-    const token = parseBearerToken(req)
-    const repId = req.query.repId as any
-    if (!token) { res.status(404).send("No token was found on the request") }
-    const decodedToken = await decode(token as string)
+export default async function reportById(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  await runMiddleware(req, res);
+
+  try {
+    const token = parseBearerToken(req);
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token provided",
+      });
+    }
+
+    const decoded = decode(token);
+
+    const user = await getUserInfo(
+      decoded.email
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const ownerId = user.get("id") as number;
+
+    const reportId = Number(req.query.repId);
+
+    if (!reportId) {
+      return res.status(400).json({
+        message: "Invalid report id",
+      });
+    }
+
     if (req.method === "GET") {
-        const userInfoRes = await getUserInfo(decodedToken as any)
-        const resEmail = userInfoRes?.dataValues.email
-        // // OBTENER UN REPORTE POR ID
-        const result = await getMyReportById(resEmail, repId)
-        res.send(result)
-    } else if (req.method === "PATCH") {
-        const { petName, location, long, lat, petImg, email, oldImg } = req.body;
-        const resEmail = await getUserInfo(decodedToken as any);
-        if (oldImg) { await deleteOldRepImg(oldImg as any); }
-        if (resEmail?.dataValues.email === email) {
-            try {
-                const data: ReportData = { petName, location, long, lat, petImg, email };
-                const result = await updateReport(data, repId);
-                res.send(result);
-            } catch (e) { res.send(console.error(e)) }
-        } else { res.send(console.error({ message: "Email missmatch" })) };
-    } else if (req.method === "DELETE") {
-        const resEmail = await getUserInfo(decodedToken as any);
-        const email = resEmail?.dataValues.email
-        if (email) {
-            try {
-                const result = await deleteReport(email, repId);
-                res.send(result);
-            } catch (e) { res.send(console.error(e)) }
-        } else { res.send(console.error({ message: "Email missmatch" })) };
+      const report = await getReportById(
+        reportId    
+      );
+
+      return res.status(200).json(report);
     }
-    else {
-        res.send({ message: "Method Not Allowed" })
+
+    if (req.method === "PATCH") {
+      const {
+        name,
+        species,
+        breed,
+        status,
+        imageUrl,
+        location,
+      } = req.body;
+
+      const report = await updateReport(
+        reportId,
+        ownerId,
+        {
+          name,
+          species,
+          breed,
+          status,
+          imageUrl,
+          location,
+        }
+      );
+
+      return res.status(200).json(report);
     }
+
+    if (req.method === "DELETE") {
+      await deleteReport(
+        reportId,
+        ownerId
+      );
+
+      return res.status(200).json({
+        success: true,
+      });
+    }
+
+    return res.status(405).json({
+      message: "Method Not Allowed",
+    });
+  } catch (error: any) {
+    console.error(error);
+
+    return res.status(500).json({
+      message:
+        error?.message ||
+        "Internal Server Error",
+    });
+  }
 }

@@ -1,14 +1,13 @@
-import jwt from "jsonwebtoken"
+import jwt from 'jsonwebtoken';
 
-export function generate(obj: string) {
-    return jwt.sign(obj, process.env.JWT_SECRET as jwt.Secret);
+export function generate(email: string) {
+  return jwt.sign({ email }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
 }
 
-export async function decode(token: string) {
-    try {
-        return jwt.verify(token, process.env.JWT_SECRET as jwt.Secret);
-    } catch (e) {
-        return console.error("token incorrecto")
-    }
+export function decode(token: string) {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET as string) as { email: string };
+  } catch (error) {
+    throw new Error('Invalid token');
+  }
 }
-

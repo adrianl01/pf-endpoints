@@ -8,12 +8,14 @@ export const Auth = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        password: {
+        passwordHash: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        user_id: {
+        id: {
             type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         }
     },
     {},

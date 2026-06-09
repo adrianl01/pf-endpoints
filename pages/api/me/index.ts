@@ -1,33 +1,50 @@
-import { createReport, getMyReports, ReportData } from "@/controllers/report";
-import { getUserInfo, updateUser, UserData } from "@/controllers/user";
-import { runMiddleware } from "@/lib/corsMiddleware";
-import { decode } from "@/lib/jwt";
-import { NextApiRequest, NextApiResponse } from "next";
-import parseBearerToken from "parse-bearer-token";
+import { getUserInfo, updateUser } from '@/controllers/user';
+import { runMiddleware } from '@/lib/corsMiddleware';
+import { decode } from '@/lib/jwt';
+import { NextApiRequest, NextApiResponse } from 'next';
+import parseBearerToken from 'parse-bearer-token';
 
-export default async function reports(req: NextApiRequest, res: NextApiResponse) {
-    await runMiddleware(req, res);
-    const token = parseBearerToken(req)
-    if (!token) { res.status(404).send({ message: "No token was found" }) }
-    if (req.method === "GET") {
-        // OBTENER MI INFO DE USUARIO
-        try {
-            const decodedToken = await decode(token as string)
-            const userInfoRes = await getUserInfo(decodedToken as any)
-            res.send(userInfoRes)
-        } catch (e) { return console.log(e) }
-    } else if (req.method === "PATCH") {
-        const { fullName, location } = req.body
-        // ACTUALIZAR INFO DE USUARIO
-        try {
-            const decodedToken = await decode(token as string)
-            const data: UserData = {
-                fullName, location
-            }
-            const updatedUserRes = await updateUser(data, decodedToken as any)
-            res.send(updatedUserRes)
-        } catch (e) { return console.log(e) }
-    } else {
-        res.send({ message: "Method Not Allowed" })
+export default async function me(req: NextApiRequest, res: NextApiResponse) {
+  await runMiddleware(req, res);
+
+  try {
+    const token = parseBearerToken(req);
+
+    if (!token) {
+      return res.status(401).json({
+        message: 'No token provided'
+      });
     }
+
+    const decoded = decode(token);
+
+    const email = decoded.email;
+
+    if (req.method === 'GET') {
+      const user = await getUserInfo(email);
+
+      return res.status(200).json(user);
+    }
+
+    if (req.method === 'PATCH') {
+      const { fullName, location } = req.body;
+
+      const updatedUser = await updateUser(email, {
+        fullName,
+        location
+      });
+
+      return res.status(200).json(updatedUser);
+    }
+
+    return res.status(405).json({
+      message: 'Method Not Allowed'
+    });
+  } catch (error: any) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: error?.message || 'Internal Server Error'
+    });
+  }
 }

@@ -1,27 +1,31 @@
 import { sequelize } from "@/lib/sequelize";
+
 import { DataTypes } from 'sequelize';
 
-export const User = sequelize.define(
-    'User',
+import { Report } from "./report";
+
+export const Sighting = sequelize.define(
+    'Sighting',
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        fullName: {
-            type: DataTypes.STRING,
+        reportId: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
-        email: {
+        description: {
             type: DataTypes.STRING,
-            allowNull: false,
         },
         location: {
             type: DataTypes.JSONB,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        },
     },
     {},
 );
-
-console.log(User === sequelize.models.User, "model user"); // true
