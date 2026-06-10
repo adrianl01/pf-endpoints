@@ -23,7 +23,7 @@ http://localhost:3000/api
 Production:
 
 ```txt
-https://your-domain.com/api
+https://pf-endpoints.vercel.app/api
 ```
 
 ---
@@ -338,6 +338,7 @@ Authorization: Bearer JWT_TOKEN
   "name": "Luna",
   "species": "Dog",
   "breed": "Golden Retriever",
+  "color":"Yellow",
   "status": "found",
   "imageUrl": "https://image-url.com/luna.jpg",
   "location": {

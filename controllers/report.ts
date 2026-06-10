@@ -5,6 +5,7 @@ export type ReportData = {
   name: string;
   species: string;
   breed: string;
+  color: string;
   status: "lost" | "found";
   imageUrl: string;
   location: {
@@ -44,6 +45,8 @@ export async function getReportById(id: number) {
 }
 
 export async function getUserReports(ownerId: number) {
+  // pedirle a la ia como asociar con cloudinay para guardar la imagen y tener el reporte
+// tambien eliminar la imagen de cloudinary al eliminar el reporte
   return Report.findAll({
     where: {
       ownerId,

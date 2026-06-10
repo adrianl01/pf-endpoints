@@ -9,6 +9,7 @@ export const Report = sequelize.define(
         name: { type: DataTypes.STRING, allowNull: false, },
         species: { type: DataTypes.STRING, allowNull: false, },
         breed: { type: DataTypes.STRING, allowNull: false, },
+        color: { type: DataTypes.STRING, allowNull: false, },
         status: { type: DataTypes.STRING, allowNull: false, },
         imageUrl: { type: DataTypes.STRING, },
         location: { type: DataTypes.JSONB, },
