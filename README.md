@@ -60,8 +60,8 @@ POST /auth
   "password": "123456",
   "fullName": "Adrian Leiva",
   "location": {
-    "lat": -27.367,
-    "lng": -55.896,
+    "latitude": -27.367,
+    "longitude": -55.896,
     "address": "Puerto Rico, Misiones"
   }
 }
@@ -163,8 +163,8 @@ Authorization: Bearer JWT_TOKEN
   "fullName": "Adrian Leiva",
   "email": "adrian@example.com",
   "location": {
-    "lat": -27.367,
-    "lng": -55.896,
+    "latitude": -27.367,
+    "longitude": -55.896,
     "address": "Puerto Rico, Misiones"
   }
 }
@@ -194,8 +194,8 @@ Authorization: Bearer JWT_TOKEN
 {
   "fullName": "Adrian Leiva",
   "location": {
-    "lat": -27.367,
-    "lng": -55.896,
+    "latitude": -27.367,
+    "longitude": -55.896,
     "address": "Puerto Rico, Misiones"
   }
 }
@@ -231,8 +231,8 @@ Authorization: Bearer JWT_TOKEN
   "status": "lost",
   "imageUrl": "https://image-url.com/luna.jpg",
   "location": {
-    "lat": -27.367,
-    "lng": -55.896,
+    "latitude": -27.367,
+    "longitude": -55.896,
     "address": "Puerto Rico, Misiones"
   }
 }
@@ -260,21 +260,21 @@ Returns reports within a configurable radius.
 ### Endpoint
 
 ```http
-GET /reports?lat=-27.367&lng=-55.896&radius=10
+GET /reports?latitude=-27.367&longitude=-55.896&radius=10
 ```
 
 ### Query Parameters
 
 | Parameter | Type   | Description                 |
 | --------- | ------ | --------------------------- |
-| lat       | number | Latitude                    |
-| lng       | number | Longitude                   |
+| latitude  | number | Latitude                    |
+| longitude | number | Longitude                   |
 | radius    | number | Search radius in kilometers |
 
 ### Example
 
 ```http
-GET /reports?lat=-27.367&lng=-55.896&radius=20
+GET /reports?lat=-27.367&longitude=-55.896&radius=20
 ```
 
 ---
@@ -343,7 +343,7 @@ Authorization: Bearer JWT_TOKEN
   "imageUrl": "https://image-url.com/luna.jpg",
   "location": {
     "lat": -27.367,
-    "lng": -55.896,
+    "longitude": -55.896,
     "address": "Puerto Rico, Misiones"
   }
 }
@@ -399,7 +399,7 @@ POST /sightings
   "description": "I saw the dog near the park entrance.",
   "location": {
     "lat": -27.365,
-    "lng": -55.892,
+    "longitude": -55.892,
     "address": "Main Park"
   }
 }
@@ -488,8 +488,8 @@ DELETE /sightings/5
   email: string;
 
   location: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     address: string;
   };
 }
@@ -513,8 +513,8 @@ DELETE /sightings/5
   imageUrl: string;
 
   location: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     address: string;
   };
 }
@@ -533,8 +533,8 @@ DELETE /sightings/5
   description: string;
 
   location: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     address: string;
   };
 

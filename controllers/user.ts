@@ -3,8 +3,8 @@ import { User } from "@/models";
 export type UserUpdateData = {
   fullName?: string;
   location?: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     address: string;
   };
 };

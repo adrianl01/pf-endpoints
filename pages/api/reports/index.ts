@@ -1,9 +1,7 @@
-import { createReport, getNearbyReports } from '@/controllers/report';
+import { createReport, getNearbyReports, ReportData } from '@/controllers/report';
 import { getUserInfo } from '@/controllers/user';
 import { runMiddleware } from '@/lib/corsMiddleware';
 import { decode } from '@/lib/jwt';
-
-import { Report } from '@/models';
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import parseBearerToken from 'parse-bearer-token';
@@ -13,18 +11,18 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
 
   try {
     if (req.method === 'GET') {
-      // GET /api/reports/nearby?lat=-27.367&lng=-55.896&radius=10 -> para obtener reportes cercanos, radio regulable en km
-      const lat = Number(req.query.lat);
-      const lng = Number(req.query.lng);
+      // GET /api/reports/nearby?latitude=-27.367&longitude=-55.896&radius=10 -> para obtener reportes cercanos, radio regulable en km
+      const latitude = Number(req.query.latitude);
+      const longitude = Number(req.query.longitude);
       const radius = Math.min(Number(req.query.radius || 10), 50);
 
-      if (isNaN(lat) || isNaN(lng)) {
+      if (isNaN(latitude) || isNaN(longitude)) {
         return res.status(400).json({
           message: 'Invalid coordinates'
         });
       }
 
-      const reports = await getNearbyReports(lat, lng, radius);
+      const reports = await getNearbyReports(latitude, longitude, radius);
 
       return res.status(200).json(reports);
     }
@@ -58,7 +56,7 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
         status,
         imageUrl,
         location
-      });
+      } as ReportData);
 
       return res.status(201).json(report);
     }

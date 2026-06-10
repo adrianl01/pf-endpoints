@@ -7,8 +7,8 @@ export type RegisterData = {
   password: string;
   fullName: string;
   location: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     address: string;
   };
 };

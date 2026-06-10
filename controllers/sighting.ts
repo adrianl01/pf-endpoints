@@ -4,8 +4,8 @@ export type SightingData = {
   reportId: string;
   description: string;
   location: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     address: string;
   };
   reporterName?: string;

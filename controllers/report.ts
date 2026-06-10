@@ -9,8 +9,8 @@ export type ReportData = {
   status: "lost" | "found";
   imageUrl: string;
   location: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
     address: string;
   };
 };
@@ -56,8 +56,8 @@ export async function getUserReports(ownerId: number) {
 }
 
 export async function getNearbyReports(
-  lat: number,
-  lng: number,
+  latitude: number,
+  longitude: number,
   radiusKm: number
 ) {
   const reports = await Report.findAll();
@@ -69,10 +69,10 @@ export async function getNearbyReports(
       if (!location) return null;
 
       const distanceKm = calculateDistance(
-        lat,
-        lng,
-        location.lat,
-        location.lng
+        latitude,
+        longitude,
+        location.latitude,
+        location.longitude
       );
 
       return {

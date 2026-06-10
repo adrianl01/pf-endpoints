@@ -1,8 +1,5 @@
 import { sequelize } from "@/lib/sequelize";
-
 import { DataTypes } from 'sequelize';
-
-import { Report } from "./report";
 
 export const Sighting = sequelize.define(
     'Sighting',
