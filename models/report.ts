@@ -15,6 +15,7 @@ export const Report = sequelize.define(
         location: { type: DataTypes.JSONB, },
         createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
         updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+        isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
     {}
 );

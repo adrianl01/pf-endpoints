@@ -13,6 +13,7 @@ export type ReportData = {
     longitude: number;
     address: string;
   };
+  isActive: boolean;
 };
 
 export async function createReport(data: ReportData) {
