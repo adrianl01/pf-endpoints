@@ -1,4 +1,5 @@
 import { User } from "@/models";
+import { UserResponse } from "@/types/user";
 
 export type UserUpdateData = {
   fullName?: string;
@@ -9,7 +10,9 @@ export type UserUpdateData = {
   };
 };
 
-export async function getUserInfo(email: string) {
+export async function getUserInfo(
+  email: string
+): Promise<UserResponse | null> {
   return User.findOne({
     where: { email },
   });
