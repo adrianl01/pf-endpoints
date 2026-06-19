@@ -38,7 +38,7 @@ export default async function reportById(
       });
     }
 
-    const ownerId = user.get("id") as number;
+    const ownerId = user.id;
 
     const reportId = Number(req.query.repId);
 

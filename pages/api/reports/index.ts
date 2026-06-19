@@ -1,7 +1,8 @@
-import { createReport, getNearbyReports, ReportData } from '@/controllers/report';
+import { createReport, getNearbyReports } from '@/controllers/report';
 import { getUserInfo } from '@/controllers/user';
 import { runMiddleware } from '@/lib/corsMiddleware';
 import { decode } from '@/lib/jwt';
+import { ReportPayload } from '@/types/report';
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import parseBearerToken from 'parse-bearer-token';
@@ -49,14 +50,14 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
       const { name, species, breed, status, imageUrl, location } = req.body;
 
       const report = await createReport({
-        ownerId: user.get('id') as number,
+        ownerId: user.id,
         name,
         species,
         breed,
         status,
         imageUrl,
         location
-      } as ReportData);
+      } as ReportPayload);
 
       return res.status(201).json(report);
     }
