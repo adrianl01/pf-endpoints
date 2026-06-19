@@ -1,48 +1,28 @@
 import { Report } from '@/models';
+import { ReportPayload } from '@/types/report';
 
-export type ReportData = {
-  ownerId: number;
-  name: string;
-  species: string;
-  breed: string;
-  color: string;
-  status: 'lost' | 'found';
-  imageUrl: string;
-  location: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  };
-  isActive: boolean;
-};
+export interface CreateReportDto extends Omit<Report, 'imageUrl'> {
+  image?: File;
+}
 
-export async function createReport(data: ReportData) {
+export async function createReport(data: ReportPayload) {
   return Report.create(data);
 }
 
-export async function updateReport(id: number, ownerId: number, data: Partial<ReportData>) {
-  const report = await Report.findOne({
-    where: {
-      id,
-      ownerId
-    }
-  });
+export async function updateReport(id: number, ownerId: number, data: Partial<ReportPayload>) {
+  const report = await Report.findOne({ where: { id, ownerId } });
 
   if (!report) {
     throw new Error('Report not found');
   }
 
   report.set(data);
-
   await report.save();
-
   return report;
 }
 
 export async function getReportById(id: number) {
-  return Report.findByPk(id, {
-    include: ['Sightings']
-  });
+  return Report.findByPk(id, { include: ['Sightings'] });
 }
 
 export async function getUserReports(ownerId: number) {
@@ -55,11 +35,8 @@ export async function getNearbyReports(latitude: number, longitude: number, radi
   return reports
     .map((report: any) => {
       const location = report.get('location');
-
       if (!location) return null;
-
       const distanceKm = calculateDistance(latitude, longitude, location.latitude, location.longitude);
-
       return {
         ...report.toJSON(),
         distanceKm
@@ -70,18 +47,12 @@ export async function getNearbyReports(latitude: number, longitude: number, radi
 }
 
 export async function deleteReport(id: number, ownerId: number) {
-  const report = await Report.findOne({
-    where: {
-      id,
-      ownerId
-    }
-  });
+  const report = await Report.findOne({ where: { id, ownerId } });
 
   if (!report) {
     throw new Error('Report not found');
   }
 
   await report.destroy();
-
   return true;
 }

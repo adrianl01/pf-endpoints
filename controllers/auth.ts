@@ -6,11 +6,7 @@ export type RegisterData = {
   email: string;
   password: string;
   fullName: string;
-  location: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  };
+
 };
 
 export type LoginData = {
@@ -23,7 +19,7 @@ function hashPassword(password: string) {
 }
 
 export async function register(data: RegisterData) {
-  const { email, password, fullName, location } = data;
+  const { email, password, fullName } = data;
 
   const existingAuth = await Auth.findOne({
     where: { email }
@@ -44,7 +40,6 @@ export async function register(data: RegisterData) {
   const user = await User.create({
     email,
     fullName,
-    location
   });
 
   const auth = await Auth.create({
