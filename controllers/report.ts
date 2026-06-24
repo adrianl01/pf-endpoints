@@ -1,5 +1,6 @@
 import { Report } from '@/models';
 import { ReportPayload } from '@/types/report';
+import {calculateDistance} from "@/lib/calculateDistance"
 
 export interface CreateReportDto extends Omit<Report, 'imageUrl'> {
   image?: File;
