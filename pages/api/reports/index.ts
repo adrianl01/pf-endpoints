@@ -38,38 +38,34 @@ export default async function reports(req: NextApiRequest, res: NextApiResponse)
       }
 
       const decoded = decode(token);
-
       const user = await getUserInfo(decoded.email);
 
       if (!user) {
-        return res.status(404).json({
-          message: 'User not found'
-        });
+        return res.status(404).json({ message: 'User not found' });
       }
 
-      const { name, species, breed, status, imageUrl, location } = req.body;
+      const { name, species, breed, status, imageUrl, location, color, phoneNumber, isActive } = req.body;
 
       const report = await createReport({
         ownerId: user.id,
         name,
         species,
         breed,
+        color,
         status,
         imageUrl,
-        location
+        location,
+        isActive,
+        phoneNumber
       } as ReportPayload);
 
       return res.status(201).json(report);
     }
 
-    return res.status(405).json({
-      message: 'Method Not Allowed'
-    });
+    return res.status(405).json({ message: 'Method Not Allowed' });
   } catch (error: any) {
     console.error(error);
 
-    return res.status(500).json({
-      message: error?.message || 'Internal Server Error'
-    });
+    return res.status(500).json({ message: error?.message || 'Internal Server Error' });
   }
 }
