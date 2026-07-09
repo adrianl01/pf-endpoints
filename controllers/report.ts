@@ -1,6 +1,6 @@
 import { Report } from '@/models';
 import { ReportPayload } from '@/types/report';
-import {calculateDistance} from "@/lib/calculateDistance"
+import { calculateDistance } from '@/lib/calculateDistance';
 
 export interface CreateReportDto extends Omit<Report, 'imageUrl'> {
   image?: File;
@@ -27,7 +27,7 @@ export async function getReportById(id: number) {
 }
 
 export async function getUserReports(ownerId: number) {
-  return Report.findAll({ where: { ownerId }, order: [['createdAt', 'DESC']] });
+  return Report.findAll({ where: { ownerId, isActive: true }, order: [['createdAt', 'DESC']] });
 }
 
 export async function getNearbyReports(latitude: number, longitude: number, radiusKm: number) {
