@@ -36,5 +36,4 @@ export async function sendEmail(reportData: ReportInfo) {
         .request(data);
 
     const { Status } = result.body.Messages[0];
-    console.log("sendEmail")
 }

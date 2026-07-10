@@ -7,7 +7,6 @@ export async function createReport(data: ReportPayload) {
 }
 
 export async function updateReport(id: number, ownerId: number, data: Partial<ReportPayload>) {
-  console.log(data);
 
   const report = await Report.findOne({ where: { id, ownerId } });
 
@@ -17,7 +16,6 @@ export async function updateReport(id: number, ownerId: number, data: Partial<Re
 
   report.set(data);
   await report.save();
-  console.log(report.toJSON());
   return report;
 }
 

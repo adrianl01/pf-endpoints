@@ -34,16 +34,10 @@ export async function register(data: RegisterData) {
 
 export async function login(data: LoginData) {
   const { email, password } = data;
-  console.log("Email:", email, "Password:", password);
-
-  const exist = await findAuthByEmail(email);
-  console.log("Exist:", exist?.toJSON());
 
   const auth = await Auth.findOne({
     where: { email, passwordHash: hashPassword(password) }
   });
-
-  console.log(auth?.toJSON());
 
   if (!auth) {
     throw new Error('Invalid credentials');

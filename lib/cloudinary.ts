@@ -18,7 +18,6 @@ export const uploadImage = async (imagePath: any) => {
     try {
         // Upload the image
         const result = await v2.uploader.upload(imagePath, options);
-        console.log(result);
         return result.public_id;
     } catch (error) {
         console.error(error);
