@@ -2,15 +2,13 @@ import { Report } from '@/models';
 import { ReportPayload } from '@/types/report';
 import { calculateDistance } from '@/lib/calculateDistance';
 
-export interface CreateReportDto extends Omit<Report, 'imageUrl'> {
-  image?: File;
-}
-
 export async function createReport(data: ReportPayload) {
   return Report.create(data);
 }
 
 export async function updateReport(id: number, ownerId: number, data: Partial<ReportPayload>) {
+  console.log(data);
+
   const report = await Report.findOne({ where: { id, ownerId } });
 
   if (!report) {
@@ -19,6 +17,7 @@ export async function updateReport(id: number, ownerId: number, data: Partial<Re
 
   report.set(data);
   await report.save();
+  console.log(report.toJSON());
   return report;
 }
 
