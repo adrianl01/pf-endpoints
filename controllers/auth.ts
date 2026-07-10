@@ -55,6 +55,7 @@ export async function register(data: RegisterData) {
 
 export async function login(data: LoginData) {
   const { email, password } = data;
+  console.log(email, password);
 
   const auth = await Auth.findOne({
     where: {
